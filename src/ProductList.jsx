@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "./CartSlice";
 function ProductList() {
   const dispatch = useDispatch();
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-
+  const totalAmount = useSelector((state) => state.cart.totalQuantity);
   const [addedToCart, setAddedToCart] = useState({});
 
   const handleAddToCart = (product) => {
@@ -322,6 +322,7 @@ function ProductList() {
             {" "}
             <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
               <h1 className="cart">
+                <h2 className="cart_quantity_count">{totalAmount}</h2>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 256 256"
@@ -369,10 +370,17 @@ function ProductList() {
                     <div className="product-cost">{plant.cost}</div>
                     {/*Similarly like the above plant.name show other details like description and cost*/}
                     <button
-                      className="product-button"
+                      className={`product-button ${
+                        addedToCart[plant.name] ? "added-to-cart" : ""
+                      }`}
                       onClick={() => handleAddToCart(plant)}
+                      disabled={addedToCart[plant.name]}
                     >
-                      Add to Cart
+                      {addedToCart[plant.name] ? (
+                        <p>Added to Cart</p>
+                      ) : (
+                        <p>Add to Cart</p>
+                      )}
                     </button>
                   </div>
                 ))}
